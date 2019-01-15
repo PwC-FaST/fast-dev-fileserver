@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ftp-data
+  namespace: fast-platform
+  labels:
+    app: ftp
+    platform: fast
+    module: archive
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: cinder

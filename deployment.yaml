@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: file-server
+  namespace: fast-platform
+  labels:
+    platform: fast
+    module: dev
+    app: file-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        platform: fast
+        module: dev
+        app: file-server
+    spec:
+      containers:
+      - name: file-server
+        image: eufast/file-server:0.1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 1
+            memory: 256Mi
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html/data
+          name: data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: ftp-data
